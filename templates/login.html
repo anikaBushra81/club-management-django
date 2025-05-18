@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/indexStyle.css">
+    
+</head>
+<body>
+    <header class="header" style="text-align: center;">
+        <div style="display: flex; flex-direction: column; align-items: center; padding: 5px;">
+            <a href="/" class="logo"><img src="/static/images/logo.png" alt="CSE"></a>
+            <p style="margin-top: 5px;">CSE CLUB, KYAU</p>
+        </div>
+    </header>    
+    
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alertMsg">
+                    <p>{{message}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="user_type">User Type:</label>
+                <select name="user_type" id="user_type" required>
+                    <option value="">Select User Type</option>
+                    <option value="student">Student</option>
+                    <option value="official">Official</option>
+                </select>
+            </div>
+            <div class="form-group" id="student_id_field" style="display: none;">
+                <label for="student_id">Student ID:</label>
+                <input type="text" id="student_id" name="student_id" value = "{{student_id}}" required>
+            </div>
+            <div class="form-group" id="official_id_field" style="display: none;">
+                <label for="official_id">Official ID:</label>
+                <input type="text" id="official_id" name="official_id" value = "{{official_id}}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <a href="{% url "forgot_password" %}" class="forget-password">Forgot Password?</a>
+            </div>
+            <div class="form-group">
+                <div class="login-btn-container">
+                    <button type="submit" class="login-btn">Login</button>
+                </div>
+            </div>
+            
+        </form>
+        <p>Not have an account? <a href="{% url 'signup' %}">Register&nbsp;&rarr;</a></p>
+    </div>
+
+    <script>
+        const studentIdField = document.getElementById('student_id_field');
+        const officialIdField = document.getElementById('official_id_field');
+        const studentId = document.getElementById('student_id');
+        const officialId = document.getElementById('official_id');
+
+        document.getElementById('user_type').addEventListener('change', function() {
+            var userType = this.value;
+            
+            // Hide both student and official fields initially
+            studentIdField.style.display = 'none';
+            officialIdField.style.display = 'none';
+
+            if (userType === 'student') {
+                studentIdField.style.display = 'block';
+                studentId.required = true;
+                officialId.required = false;                
+                document.getElementById('official_id').value = "";
+            } else if (userType === 'official') {
+                officialIdField.style.display = 'block';
+                studentId.required = false;
+                officialId.required = true;                
+                document.getElementById('student_id').value = "";
+            }
+        });
+
+
+        document.getElementById("user_type").value = "{{user_type}}";
+        const u_type = "{{user_type}}";
+        if (u_type === 'student') {
+            studentIdField.style.display = 'block';
+            studentId.required = true;
+            officialId.required = false;                
+            document.getElementById('official_id').value = "";
+        }
+        else if (u_type === 'official') {
+            officialIdField.style.display = 'block';
+            studentId.required = false;
+            officialId.required = true;                
+            document.getElementById('student_id').value = "";
+        }
+    </script>
+{% include "footer.html" %}
