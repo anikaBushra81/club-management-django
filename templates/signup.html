@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block content %}
+    <form method="post" action="{% url "submission" %}" class="form">
+        <h1>Signup Form</h1>
+        {% csrf_token %}
+        
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" value="{{uname}}">
+        {% if error == 'uname' %}
+        <div id ="is_error" class="error">
+            <label for="error">{{ error_msg }}</label>            
+        </div>
+        {% endif %}
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" value="{{email}}" required>
+        {% if error == 'email' %}
+        <div id ="is_error" class="error">
+            <label for="error">{{ error_msg }}</label>            
+        </div>
+        {% endif %}
+        <br>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" name="phone" id="phone" value="{{phone}}" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+        <div class="checkbox">
+            <input type="checkbox" id="showPassword">
+            <label for="showPassword">Show Password</label>            
+        </div>
+        <br>
+        <label for="blood_group">Blood group:</label>
+        <select name="blood_group" id="blood_group" required>
+            <option value = "A+">A+</option>
+            <option value = "A-">A-</option>
+            <option value = "B+">B+</option>
+            <option value = "B-">B-</option>
+            <option value = "O+">O+</option>
+            <option value = "O-">O-</option>
+            <option value = "AB+">AB+</option>
+            <option value = "AB-">AB-</option>
+        </select>
+        <br>
+        <label for="user_type">User Type:</label>
+        <select name="user_type" id="user_type" required>
+            <option value="">Select User Type</option>
+            <option value="student">Student</option>
+            <option value="official">Official</option>
+        </select>
+        <br>
+
+        <div id="student_fields" style="display: none;">
+            <label for="student_id">Student ID:</label>
+            <input type="text" name="student_id" id="student_id" value="{{student_id}}" required>
+            {% if error == 'student' %}
+                <div id ="is_error" class="error">
+                    <label for="error">{{ error_msg }}</label>            
+                </div>
+            {% endif %}
+            <br>
+            <label for="batch">Batch:</label>
+            <input type="text" name="batch" id="batch" value="{{batch}}" required>
+            <br>
+        </div>
+
+        <div id="official_fields" style="display: none;">
+            <label for="official_id">Official ID:</label>
+            <input type="text" name="official_id" id="official_id" value="{{official_id}}" required>
+            {% if error == 'official' %}
+                <div id ="is_error" class="error">
+                    <label for="error">{{ error_msg }}</label>            
+                </div>
+            {% endif %}
+            <br>
+            <label for="designation">Designation:</label>
+            <input type="text" name="designation" id="designation" value="{{designation}}" required>
+            <br>
+        </div>
+
+        <br>
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <script>
+        // Get the user type selection element and relevant input fields
+        const userTypeSelect = document.getElementById('user_type');
+        const studentFields = document.getElementById('student_fields');
+        const officialFields = document.getElementById('official_fields');
+        const studentIdInput = document.getElementById('student_id');
+        const batchInput = document.getElementById('batch');
+        const officialIdInput = document.getElementById('official_id');
+        const designationInput = document.getElementById('designation');
+
+        // Add event listener to user type selection
+        userTypeSelect.addEventListener('click', function() {
+            const selectedType = this.value;
+
+            // Hide both student and official fields initially
+            studentFields.style.display = 'none';
+            officialFields.style.display = 'none';
+
+            // Show relevant fields based on user type
+            if (selectedType === 'student') {
+                studentFields.style.display = 'block';
+                // Make student fields required
+                studentIdInput.required = true;
+                batchInput.required = true;
+                // Make official fields not required and set their value to NULL
+                officialIdInput.required = false;
+                designationInput.required = false;
+                document.getElementById('official_id').value = '';
+                document.getElementById('designation').value = '';
+                
+            } else if (selectedType === 'official') {
+                officialFields.style.display = 'block';
+                // Make official fields required
+                officialIdInput.required = true;
+                designationInput.required = true;
+                // Make student fields not required and set their value to NULL
+                studentIdInput.required = false;
+                batchInput.required = false;
+                document.getElementById('student_id').value = '';
+                document.getElementById('batch').value = '';
+            }
+        });
+
+        const passwordField = document.getElementById('password');
+        const showPasswordCheckbox = document.getElementById('showPassword');
+
+        showPasswordCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            if (isChecked) {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        });
+
+        const errorField = document.getElementById('is_error');
+        const userNameInput = document.getElementById('username');
+
+        userNameInput.addEventListener('input', function() {
+            const nameValue = this.value.trim(); // Trim to remove whitespace
+            if (nameValue) {
+                errorField.style.display = 'none'; // Hide error message
+            } else {
+                errorField.style.display = 'block'; // Show error message
+            }
+        });
+
+        {% comment %} const errorField = document.getElementById('is_error');
+        const studentId = document.getElementById('student_id');
+        studentId.addEventListener('input', function() {
+            const idValue = this.value.trim(); // Trim to remove whitespace
+            if (idValue) {
+                errorField.style.display = 'none'; // Hide error message
+            } else {
+                errorField.style.display = 'block'; // Show error message
+            }
+        }); {% endcomment %}
+
+        document.getElementById("blood_group").value = "{{blood_group}}";
+        
+        document.getElementById("user_type").value = "{{user_type}}";
+        const utype = "{{user_type}}";
+        if (utype === 'student') {
+            studentFields.style.display = 'block';
+            // Make student fields required
+            studentIdInput.required = true;
+            batchInput.required = true;
+            // Make official fields not required and set their value to NULL
+            officialIdInput.required = false;
+            designationInput.required = false;
+            document.getElementById('official_id').value = '';
+            document.getElementById('designation').value = '';
+        }
+        else if (utype === 'official') {
+            officialFields.style.display = 'block';
+            // Make official fields required
+            officialIdInput.required = true;
+            designationInput.required = true;
+            // Make student fields not required and set their value to NULL
+            studentIdInput.required = false;
+            batchInput.required = false;
+            document.getElementById('student_id').value = '';
+            document.getElementById('batch').value = '';
+        }             
+        
+
+    </script>
+{% endblock content %}

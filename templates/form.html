@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+    <form method="post" action="{% url "submission" %}">
+        <h1>Signup Form</h1>
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <br>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" name="phone" id="phone" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+        <br>
+        <label for="user_type">User Type:</label>
+        <select name="user_type" id="user_type" required>
+            <option value="">Select User Type</option>
+            <option value="student">Student</option>
+            <option value="official">Official</option>
+        </select>
+        <br>
+
+        <div id="student_fields" style="display: none;">
+            <label for="student_id">Student ID:</label>
+            <input type="text" name="student_id" id="student_id" >
+            <br>
+            <label for="batch">Batch:</label>
+            <input type="text" name="batch" id="batch" >
+            <br>
+        </div>
+
+        <div id="official_fields" style="display: none;">
+            <label for="official_id">Official ID:</label>
+            <input type="text" name="official_id" id="official_id" >
+            <br>
+            <label for="designation">Designation:</label>
+            <input type="text" name="designation" id="designation" >
+            <br>
+        </div>
+
+        <br>
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <script>
+        // Get the user type selection element
+        const userTypeSelect = document.getElementById('user_type');
+
+        // Get the student and official field divs
+        const studentFields = document.getElementById('student_fields');
+        const officialFields = document.getElementById('official_fields');
+
+        // Add event listener to user type selection
+        userTypeSelect.addEventListener('change', function() {
+            const selectedType = this.value;
+
+            // Hide both student and official fields initially
+            studentFields.style.display = 'none';
+            officialFields.style.display = 'none';
+
+            // Show relevant fields based on user type
+            if (selectedType === 'student') {
+                studentFields.style.display = 'block';
+            } else if (selectedType === 'official') {
+                officialFields.style.display = 'block';
+            }
+        });
+    </script>
+{% endblock content %}
